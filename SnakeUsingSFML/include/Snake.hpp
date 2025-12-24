@@ -12,6 +12,8 @@ public:
 
 	const sf::Vector2i &getHead() const;
 	const std::vector<sf::Vector2i>& getSegments() const;
+	bool isSelfCollision() const;
+	bool isOutOfWindow(int gridW, int gridH) const;
 
 private:
 	sf::Vector2i _head;

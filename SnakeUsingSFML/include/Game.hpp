@@ -31,6 +31,15 @@ private:
 	// ========= EVENT =========
 	sf::Event _ev;
 
+	// ========= PUNKTY =========
+	sf::Font _font;
+	sf::Text _scoreText;
+	int _score;
+	sf::Vector2f _scorePosition;
+
+	// Ksztalt glowy weza
+	sf::RectangleShape _snakeHeadShape;
+
 	Snake _snake;
 	Food _food;
 };

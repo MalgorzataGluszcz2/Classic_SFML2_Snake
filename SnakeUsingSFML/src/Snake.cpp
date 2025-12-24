@@ -48,3 +48,20 @@ const std::vector<sf::Vector2i>& Snake::getSegments() const
 {
 	return _segments;
 }
+
+bool Snake::isSelfCollision() const
+{
+	for (const auto &body : _segments)
+	{
+		if (body == _head)
+			return true;
+	}
+
+	return false;
+}
+
+bool Snake::isOutOfWindow(int gridW, int gridH) const
+{
+	return _head.x < 0 || _head.x >= gridW ||
+			  _head.y < 0 || _head.y >= gridH;
+}

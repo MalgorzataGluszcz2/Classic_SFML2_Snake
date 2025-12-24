@@ -1,8 +1,15 @@
 #include "../include/Game.hpp"
 
-Game::Game() : _window(sf::VideoMode(GRID_WIDTH * CELL_SIZE, GRID_HEIGHT * CELL_SIZE), "My Snake Game!"), _timer(0.0f), _food(GRID_WIDTH, GRID_HEIGHT)
+Game::Game() : _window(sf::VideoMode(GRID_WIDTH * CELL_SIZE, GRID_HEIGHT * CELL_SIZE), "My Snake Game!"), _timer(0.0f), _scorePosition(sf::Vector2f(1, 1)), _food(GRID_WIDTH, GRID_HEIGHT), _score(0)
 {
-
+	_font.loadFromFile("font/OpenSans-Regular.ttf");
+	_scoreText.setFont(_font);
+	_scoreText.setCharacterSize(30);
+	_scoreText.setFillColor(sf::Color(255, 255, 255));
+	_scoreText.setOutlineThickness(2);
+	_scoreText.setOutlineColor(sf::Color(0, 0, 0));
+	_scoreText.setPosition(_scorePosition);
+	_scoreText.setString("Score: ");
 }
 
 void Game::run()
@@ -53,13 +60,23 @@ void Game::update()
 		// Gdy waz zje owoc
 		if (_snake.getHead() == _food.getPosition())
 		{
+			_score++;
+			_scoreText.setString("Score: " + std::to_string(_score));
 			_snake.grow();
 			_food.respawn();
 		}
 
 		// Kolizja weza z samym soba
+		if (_snake.isSelfCollision())
+		{
+			_window.close();
+		}
 
 		// Kolizja weza z oknem
+		if (_snake.isOutOfWindow(GRID_WIDTH, GRID_HEIGHT))
+		{
+			_window.close();
+		}
 	}
 }
 
@@ -74,10 +91,10 @@ void Game::render()
 	_window.draw(fruitShape);
 
 	// Rysuj glowe
-	sf::RectangleShape snakeHeadShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-	snakeHeadShape.setFillColor(sf::Color(0, 255, 0));
-	snakeHeadShape.setPosition(_snake.getHead().x * CELL_SIZE, _snake.getHead().y * CELL_SIZE);
-	_window.draw(snakeHeadShape);
+	_snakeHeadShape.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+	_snakeHeadShape.setFillColor(sf::Color(0, 255, 0));
+	_snakeHeadShape.setPosition(_snake.getHead().x * CELL_SIZE, _snake.getHead().y * CELL_SIZE);
+	_window.draw(_snakeHeadShape);
 
 	// Rysuj cialo
 	sf::RectangleShape snakeBodyShape(sf::Vector2f(CELL_SIZE, CELL_SIZE));
@@ -88,6 +105,9 @@ void Game::render()
 		snakeBodyShape.setPosition(segment.x * CELL_SIZE, segment.y * CELL_SIZE);
 		_window.draw(snakeBodyShape);
 	}
+
+	_scoreText.setPosition(sf::Vector2f(_scorePosition.x * CELL_SIZE, _scorePosition.y * CELL_SIZE));
+	_window.draw(_scoreText);
 
 	_window.display();
 }
